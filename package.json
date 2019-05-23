@@ -1,13 +1,14 @@
 {
-    "name": "{{ project-name }}",
+    "name": "aws",
     "version": "1.0.0",
-    "description": "package for creating workers templates",
+    "description": "package for aws + workers",
     "main": "index.js",
     "scripts": {
+        "build": "webpack index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write '**/*.{js,css,json,md}'"
     },
-    "author": "{{ authors }}",
+    "author": "Connor Peshek",
     "license": "ISC",
     "devDependencies": {
         "husky": "^2.1.0",
@@ -20,6 +21,8 @@
         }
     },
     "dependencies": {
-        "serverless-cloudflare-workers": "^1.2.0"
+        "aws4fetch": "^1.0.0",
+        "serverless-cloudflare-workers": "^1.2.0",
+        "webpack": "^4.32.2"
     }
 }

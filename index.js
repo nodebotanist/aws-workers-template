@@ -1,69 +1,45 @@
-const someHTML = `
-<!DOCTYPE html>
-<html>
-<body>
+import {AwsClient} from 'aws4fetch';
 
-<h1>Hello World</h1>
-<p>This is all generated using a Worker</p>
-<iframe
-    width="560"
-    height="315"
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-    frameborder="0"
-    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-></iframe>
-
-</body>
-</html>
-`
-const someJSON = {
-  result: ['some', 'results'],
-  errors: null,
-  msg: 'this is some random json',
-}
-
-/**
- * rawHtmlResponse delievers a response with HTML inputted directly
- * into the worker script
- * @param {string} html
- */
-async function rawHtmlResponse(html) {
-  const init = {
-    headers: {
-      'content-type': 'text/html;charset=UTF-8',
-    },
-  }
-
-  return new Response(html, init)
-}
-
-/**
- * rawJsonResponse delievers a response with a Json Object inputted directly
- * into the worker script
- * @param {Object} json
- */
-async function rawJsonResponse(json) {
-  const init = {
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-    },
-  }
-
-  return new Response(JSON.stringify(json), init)
-}
-
-/**
- * TODO changeto use KV will need mime types https://www.npmjs.com/package/mime-types
- */
+const aws = new AwsClient({
+  accessKeyId: 'YOUR-KEY',
+  secretAccessKey: 'YOUR-SECRET-KEY'
+})
 
 addEventListener('fetch', event => {
-  const { url } = event.request
-
-  if (url.endsWith('/html')) {
-    return event.respondWith(rawHtmlResponse(someHTML))
-  }
-  if (url.endsWith('/json')) {
-    return event.respondWith(rawJsonResponse(someJSON))
-  }
+  event.respondWith(handleRequest(event.request))
 })
+
+async function handleRequest(request) {
+  const url = new URL(request.url)
+  const bucket = "cfredirect"
+  url.hostname = `${bucket}.s3.amazonaws.com`
+
+  let resp
+
+  switch (request.method) {
+    // it is recommended to use put in place of post requests
+    case "PUT":
+      if (url.pathname.endsWith("html"||"js"||"css"||"txt")) {
+        const body = await request.text()
+        resp = await aws.fetch(url, { method: "PUT", body})
+      }
+      if (url.pathname.endsWith("png"||"jpg")) {
+        const body = await request.blob()
+        resp = await aws.fetch(url, {method: "PUT", body})
+      }
+      break;
+    case "POST":
+      resp = new Response("Please use PUT instead of POST")
+      break;
+    case "DELETE":
+        // delete the item at the specified endpoint
+        resp = await aws.fetch(url, {method: "DELETE"})
+        break;
+    default:
+      // get by default
+      resp = await aws.fetch(url)
+      break;
+  }
+
+  return resp
+}
