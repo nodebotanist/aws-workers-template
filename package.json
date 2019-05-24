@@ -4,7 +4,7 @@
     "description": "package for aws + workers",
     "main": "index.js",
     "scripts": {
-        "build": "webpack index.js",
+        "build": "webpack",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write '**/*.{js,css,json,md}'"
     },
@@ -25,6 +25,7 @@
         "dotenv-webpack": "^1.7.0",
         "serverless-cloudflare-workers": "^1.2.0",
         "webpack": "^4.32.2",
-        "webpack-cli": "^3.3.2"
+        "webpack-cli": "^3.3.2",
+        "wrangler-js": "^0.1.9"
     }
 }
