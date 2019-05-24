@@ -1,0 +1,5 @@
+name = "aws-template"
+type = "webpack"
+zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+route = "YOUR_ZONE/aws-template"
