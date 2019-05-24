@@ -1,8 +1,8 @@
 import {AwsClient} from 'aws4fetch';
 
 const aws = new AwsClient({
-  accessKeyId: 'YOUR-KEY',
-  secretAccessKey: 'YOUR-SECRET-KEY'
+  accessKeyId: process.env.KEY,
+  secretAccessKey: process.env.SECRET
 })
 
 addEventListener('fetch', event => {
