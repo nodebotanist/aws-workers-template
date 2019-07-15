@@ -27,18 +27,18 @@ async function handleRequest(request) {
         const body = await request.blob()
         resp = await aws.fetch(url, {method: "PUT", body})
       }
-      break;
+      break
     case "POST":
       resp = new Response("Please use PUT instead of POST")
-      break;
+      break
     case "DELETE":
         // delete the item at the specified endpoint
         resp = await aws.fetch(url, {method: "DELETE"})
-        break;
+        break
     default:
       // get by default
       resp = await aws.fetch(url)
-      break;
+      break
   }
 
   return resp
